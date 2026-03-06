@@ -68,30 +68,48 @@ namespace ConsoleAppElsoOP
         {
             Auto skoda, passat;
 
-            skoda = new Auto("AB-CD-123", "Skoda SuperB", 5.23, 16000);
-            passat = new Auto("XYZ-789", "VW Passat", 6.97, 13000, 256000);
+            skoda = new Auto("AB-CD-123", "Skoda SuperB", 55, 5.23, 16000);
 
-            Console.WriteLine(skoda);
-            Console.WriteLine(passat);
             //Haromszog egyebHaromszog = new Haromszog();
 
             Random rnd = new Random();
-            for (int i = 0; i < 80; i++)
+            for (int i = 0; i < 120; i++)
             {
+                int tervezettUt = rnd.Next(100, 600);
+                Console.WriteLine($"{i + 1}. ({tervezettUt}km) Út előtt: {skoda}");
+
                 if (skoda.EsedekesSzerviz())
                 {
                     Console.WriteLine("Lassan menni kellene a szervizbe!");
                 }
                 try
                 {
-                    skoda.Menj(rnd.Next(10, 900));
+                    skoda.Menj(tervezettUt);
                 }
-                catch (Exception)
+                catch (ArgumentException)
                 {
-                    Console.WriteLine("\nEzt a kocsit előbb szervizelni kell!\n");
+                    Console.WriteLine("Ezt a kocsit előbb szervizelni kell!\n");
                     skoda.SzervizElvegzese();
+                    try
+                    {
+                        skoda.Menj(tervezettUt);
+                    }
+                    catch (OverflowException)
+                    {
+                        Console.WriteLine("Tankolni kell!");
+                        skoda.Tankol(skoda.TartalyMeret);
+                        skoda.Menj(tervezettUt); ;
+                    }
                 }
-                Console.WriteLine($"{i + 1}.{skoda}");
+
+                catch (OverflowException)
+                {
+                    Console.WriteLine("Tankolni kell!");
+                    skoda.Tankol(skoda.TartalyMeret);
+                    skoda.Menj(tervezettUt);
+                }
+                Console.WriteLine($"{i + 1}. Út után: {skoda}\n");
+
             }
 
 
